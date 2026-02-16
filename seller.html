@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Seller Register</title>
+</head>
+<body>
+
+<h2>Seller Register</h2>
+
+<form id="sellerForm">
+  <input type="text" id="name" placeholder="Name" required /><br><br>
+  <input type="email" id="email" placeholder="Email" required /><br><br>
+  <input type="password" id="password" placeholder="Password" required /><br><br>
+  <button type="submit">Register</button>
+</form>
+
+<script>
+document.getElementById("sellerForm").addEventListener("submit", async function(e) {
+  e.preventDefault();
+
+  const data = {
+    name: document.getElementById("name").value,
+    email: document.getElementById("email").value,
+    password: document.getElementById("password").value
+  };
+
+  try {
+    const response = await fetch("http://localhost:3000/seller/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    });
+
+    const result = await response.text();
+    alert(result);
+    document.getElementById("sellerForm").reset();
+
+  } catch (err) {
+    alert("Error connecting to server");
+    console.error(err);
+  }
+});
+</script>
+
+
+</body>
+</html>

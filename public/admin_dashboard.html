@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Admin Dashboard</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      color: white;
+      margin-bottom: 30px;
+      font-size: 2.5em;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 25px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 15px;
+      padding: 25px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+    }
+
+    .card h2 {
+      color: #667eea;
+      margin-bottom: 20px;
+      font-size: 1.5em;
+      border-bottom: 3px solid #667eea;
+      padding-bottom: 10px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px 15px;
+      margin-bottom: 12px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 14px;
+      transition: border-color 0.3s ease;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    button
+    {
+      width: 100%;
+      padding: 12px 20px;
+      margin-bottom: 10px;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .btn-add
+    {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .btn-add:hover
+    {
+      transform: scale(1.02);
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-delete
+    {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      color: white;
+    }
+
+    .btn-delete:hover
+    {
+      transform: scale(1.02);
+      box-shadow: 0 5px 15px rgba(245, 87, 108, 0.4);
+    }
+
+    .btn-view {
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      color: white;
+      font-size: 16px;
+    }
+
+    .btn-view:hover {
+      transform: scale(1.02);
+      box-shadow: 0 5px 15px rgba(79, 172, 254, 0.4);
+    }
+
+    ul {
+      list-style: none;
+      margin-top: 15px;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    li
+    {
+      background: #f8f9fa;
+      padding: 12px 15px;
+      margin-bottom: 8px;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background 0.3s ease;
+    }
+
+    li:hover {
+      background: #e9ecef;
+    }
+
+    .item-info {
+      flex: 1;
+    }
+
+    .item-name {
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 3px;
+    }
+
+    .item-email {
+      font-size: 13px;
+      color: #666;
+    }
+
+    .item-id {
+      font-size: 12px;
+      color: #999;
+      font-family: monospace;
+    }
+
+    .btn-remove {
+      background: #dc3545;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 12px;
+      transition: background 0.3s ease;
+      width: auto;
+      text-transform: none;
+      letter-spacing: normal;
+    }
+
+    .btn-remove:hover {
+      background: #c82333;
+    }
+
+    .empty-state {
+      text-align: center;
+      color: #999;
+      padding: 20px;
+      font-style: italic;
+    }
+
+    .stats {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 15px;
+      padding: 15px;
+      background: #f8f9fa;
+      border-radius: 8px;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 24px;
+      font-weight: bold;
+      color: #667eea;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: #666;
+      text-transform: uppercase;
+    }
+
+    .complaint-list {
+      margin-top: 15px;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    .complaint-item {
+      background: #f8f9fa;
+      padding: 15px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      border-left: 4px solid #667eea;
+    }
+    .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.logout-btn {
+  background: linear-gradient(135deg, #ff512f 0%, #dd2476 100%);
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 25px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  width: auto;
+}
+
+.logout-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 5px 15px rgba(221, 36, 118, 0.4);
+}
+
+
+    .complaint-header {
+      font-weight: bold;
+      margin-bottom: 5px;
+      color: #333;
+      font-size: 14px;
+    }
+
+    .complaint-body {
+      color: #666;
+      font-size: 13px;
+    }
+
+    .dashboard {
+      display: flex;
+      height: 100vh;
+    
+    }
+    .complaint-date {
+      font-size: 11px;
+      color: #999;
+      margin-top: 5px;
+    }
+
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 1.8em;
+      }
+
+      .container {
+        grid-template-columns: 1fr;
+      }
+
+      .stats {
+        flex-direction: column;
+        gap: 10px;
+      }
+     
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+  <h1>📊 Admin Dashboard</h1>
+  <button class="logout-btn" onclick="logout()">Logout</button>
+</div>
+
+ 
+  <div class="container">
+   
+    <!-- MANAGE SELLERS -->
+    <div class="card">
+      <h2>👥 Manage Sellers</h2>
+     
+      <button class="btn-delete" id="deleteSellers">Delete All Sellers</button>
+      <ul id="sellerList">
+        <li>
+          <div class="item-info">
+            <div class="item-name">Sakshi</div>
+            <div class="item-email">btbts23110_sakshi@banasthali.in</div>
+          </div>
+          <button class="btn-remove">Remove</button>
+        </li>
+        <li>
+          <div class="item-info">
+            <div class="item-name">Deepanjali</div>
+            <div class="item-email">btbts23100_deepanjali@banasthali.in</div>
+          </div>
+          <button class="btn-remove">Remove</button>
+        </li>
+      </ul>
+    </div>
+
+    <!-- MANAGE BUYERS -->
+    <div class="card">
+      <h2>🛒 Manage Buyers</h2>
+     
+      <button class="btn-delete" id="deleteBuyers">Delete All Buyers</button>
+      <ul id="buyerList">
+        <li>
+          <div class="item-info">
+            <div class="item-name">Nidhi</div>
+            <div class="item-email">btbts24210_nidhi@banasthali.in</div>
+          </div>
+          <button class="btn-remove">Remove</button>
+        </li>
+        <li>
+          <div class="item-info">
+            <div class="item-name">Rashi</div>
+            <div class="item-email">btbtc24101_rashi@banasthali.in</div>
+          </div>
+          <button class="btn-remove">Remove</button>
+        </li>
+        <li>
+          <div class="item-info">
+            <div class="item-name">Ritika</div>
+            <div class="item-email">btbts23115_ritika@banasthali.in</div>
+          </div>
+          <button class="btn-remove">Remove</button>
+        </li>
+      </ul>
+    </div>
+
+    <!-- MANAGE PRODUCTS -->
+    <div class="card">
+      <h2>📦 Manage Products</h2>
+     
+     
+      <button class="btn-delete" id="deleteProducts">Delete All Products</button>
+      <ul id="productList">
+        <li>
+          <div class="item-info">
+            <div class="item-name">Oil paintings</div>
+            
+          </div>
+          <button class="btn-remove">Remove</button>
+        </li>
+        <li>
+          <div class="item-info">
+            <div class="item-name">keychains</div>
+            
+          </div>
+          <button class="btn-remove">Remove</button>
+        </li>
+        <li>
+          <div class="item-info">
+            <div class="item-name">Sented candles</div>
+            
+          </div>
+          <button class="btn-remove">Remove</button>
+        </li>
+        <li>
+          <div class="item-info">
+            <div class="item-name">Organizer</div>
+            
+          </div>
+          <button class="btn-remove">Remove</button>
+        </li>
+      </ul>
+    </div>
+  <div class="dashboard" id="dashboard" style="display:none;"></div>
+    <!-- SUPPORT -->
+    <div class="card">
+      <h2>💬 Support Center</h2>
+      
+     
+      <div class="complaint-list">
+        <div class="complaint-item">
+          <div class="complaint-header">🔴 Ishika</div>
+          <div class="complaint-body">Product not delivered on time. Expected delivery was 3 days ago.</div>
+          <div class="complaint-date">Date: 2026-01-05</div>
+        </div>
+        <div class="complaint-item">
+          <div class="complaint-header">🔴 Akshita</div>
+          <div class="complaint-body">quality of product was not good.</div>
+          <div class="complaint-date">Date: 2026-01-06</div>
+        </div>
+        <div class="complaint-item">
+          <div class="complaint-header">🔴swati </div>
+          <div class="complaint-body">product delivery was not on time.</div>
+          <div class="complaint-date">Date: 2026-01-07</div>
+        </div>
+     
+      </div>
+    </div>
+    <p>Welcome, <span id="adminEmail"></span></p>
+  </div>
+
+ <script>
+document.addEventListener("DOMContentLoaded", () => {
+
+  /* ===== SESSION CHECK ===== */
+  async function checkSession() {
+    try {
+      const res = await fetch("http://localhost:3000/check-session", {
+        credentials: "include"
+      });
+      const data = await res.json();
+
+      if (!data.loggedIn || data.user.role !== "admin") {
+        window.location.replace("novaconnect_2ndpage.html");
+        return;
+      }
+
+      document.getElementById("adminEmail").textContent = data.user.email;
+    } catch (err) {
+      window.location.replace("novaconnect_2ndpage.html");
+    }
+  }
+
+  /* ===== LOGOUT ===== */
+  window.logout = async function () {
+    try {
+      await fetch("http://localhost:3000/logout", {
+        method: "POST",
+        credentials: "include"
+      });
+
+      localStorage.clear();
+      sessionStorage.clear();
+
+      window.location.href = "login.html";
+    } catch (err) {
+      alert("Logout failed");
+    }
+  };
+
+  /* ===== REMOVE INDIVIDUAL ITEM ===== */
+  document.addEventListener("click", function (e) {
+    if (e.target.classList.contains("btn-remove")) {
+      e.target.closest("li").remove();
+    }
+  });
+
+  /* ===== DELETE ALL ===== */
+  document.getElementById("deleteSellers").onclick = () => {
+    document.getElementById("sellerList").innerHTML =
+      "<div class='empty-state'>No sellers left</div>";
+  };
+
+  document.getElementById("deleteBuyers").onclick = () => {
+    document.getElementById("buyerList").innerHTML =
+      "<div class='empty-state'>No buyers left</div>";
+  };
+
+  document.getElementById("deleteProducts").onclick = () => {
+    document.getElementById("productList").innerHTML =
+      "<div class='empty-state'>No products left</div>";
+  };
+
+  /* ===== INITIAL CHECK ===== */
+  checkSession();
+});
+</script>
+
+</body>
+</html>

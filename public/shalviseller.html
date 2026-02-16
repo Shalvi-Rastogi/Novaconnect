@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<title>Seller Dashboard</title>
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+body {
+  background: #eef1f5;
+}
+
+.dashboard {
+  display: flex;
+  height: 100vh;
+}
+
+/* ================= SIDEBAR ================= */
+.sidebar {
+  width: 260px;
+  background: linear-gradient(180deg, #111827, #1f2933);
+  color: white;
+  padding: 25px 20px;
+  display: flex;
+  flex-direction: column;
+}  
+
+.sidebar h2 {
+  text-align: center;
+  margin-bottom: 35px;
+  letter-spacing: 1px;
+}
+
+.sidebar button {
+  width: 100%;
+  padding: 14px;
+  margin: 8px 0;
+  background: transparent;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 8px;
+  font-size: 15px;
+  text-align: left;
+  transition: 0.3s;
+}
+
+.sidebar button span {
+  margin-right: 10px;
+}
+
+.sidebar button:hover {
+  background: #539edf;
+}
+
+/* Sidebar footer */
+.sidebar-footer {
+  margin-top: auto;
+  border-top: 1px solid #374151;
+  padding-top: 20px;
+}
+
+.logout {
+  background: #dc2626 !important;
+  text-align: center !important;
+}
+
+.logout:hover {
+  background: #b91c1c !important;
+}
+
+.main {
+  flex: 1;
+  padding: 35px;
+  overflow-y: auto;
+}
+
+.section {
+  display: none;
+}
+
+.section.active {
+  display: block;
+}
+
+
+.card {
+  background: white;
+  padding: 25px;
+  border-radius: 14px;
+  width: 95%;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+  margin-bottom: 25px;
+}
+
+
+input, textarea {
+  width: 100%;
+  padding: 12px;
+  margin: 12px 0;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.save-btn {
+  background: #2563eb;
+  color: white;
+  padding: 12px 22px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 20px; /* 👈 spacing above button */
+}
+
+.save-btn:hover {
+  background: #1d4ed8;
+}
+
+
+.popup {
+  position: fixed;
+  top: 25px;
+  right: 25px;
+  background: #22c55e;
+  color: white;
+  padding: 14px 22px;
+  border-radius: 10px;
+  display: none;
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 22px;
+  margin-top: 20px;
+}
+
+.product-card {
+  background: white;
+  padding: 16px;
+  border-radius: 14px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+  text-align: center;
+  transition: 0.3s;
+}
+
+.product-card:hover {
+  transform: translateY(-5px);
+}
+
+.product-card img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 10px;
+  margin-bottom: 12px;
+}
+
+.delete-btn {
+  background: #dc2626;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.delete-btn:hover {
+  background: #b91c1c;
+}
+.preview-img {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  margin-top: 12px;
+  margin-bottom: 20px; /* 👈 spacing added */
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+}
+
+.price-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.rupee-symbol {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 16px;
+  font-weight: 600;
+  color: #555;
+}
+
+.price-wrapper input {
+  padding-left: 32px; /* space for ₹ */
+}
+
+.file-upload {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid #ccc;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #fff;
+  width: 100%;
+}
+
+.file-upload input[type="file"] {
+  display: none;
+}
+
+.file-label {
+  background: #2563eb;
+  color: white;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.file-label:hover {
+  background: #1d4ed8;
+}
+
+#fileName {
+  font-size: 14px;
+  color: #555;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 220px;
+}
+
+.required {
+  color: red;
+  font-weight: bold;
+}
+
+.form-title {
+  margin-bottom: 20px;
+}
+
+.required-label,
+.normal-label {
+  display: block;
+  margin-top: 14px;
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+
+.required {
+  color: red;
+}
+
+.price-wrapper {
+  position: relative;
+}
+
+.rupee-symbol {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-weight: bold;
+}
+
+#price {
+  padding-left: 28px;
+}
+
+/* Red Button */
+.save-btn {
+  margin-top: 20px;
+  background-color: #e53935;
+  color: white;
+  border: none;
+  padding: 12px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 15px;
+}
+
+.save-btn:hover {
+  background-color: #c62828;
+}
+
+
+</style>
+
+<meta http-equiv="Cache-Control" content="no-store" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
+</head>
+
+<body>
+
+<div class="dashboard">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <h2>🛒 Seller</h2>
+
+    <button type="button" onclick="showSection('welcome')"><span>🏠</span>Dashboard</button>
+    <button type="button" onclick="showSection('orders')"><span>📦</span>Orders</button>
+    <button type="button" onclick="showSection('reviews')"><span>⭐</span>Reviews</button>
+    <button type="button" onclick="showSection('addproduct')"><span>➕</span>Add Product</button>
+    <button type="button" onclick="showSection('store')"><span>🛍️</span>My Products</button>
+
+    <!-- NEW SIDEBAR ITEMS -->
+    <div class="sidebar-footer">
+      <button onclick="showSection('profile')"><span>👤</span>Profile</button>
+      <button class="logout" onclick="logoutSeller()"><span>🚪</span>Logout</button>
+    </div>
+  </div>
+  <div class="dashboard" id="dashboard" style="display:none;">
+</div>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <div id="welcome" class="section active">
+      <div class="card">
+        <h2>Welcome Seller 👋</h2>
+        <p>Manage your store, products and orders from one place.</p>
+      </div>
+    </div>
+
+    <div id="orders" class="section">
+      <div class="card">
+        <h2>Orders</h2>
+        <ul>
+          <li>Order #101 – Delivered</li>
+          <li>Order #102 – Pending</li>
+          <li>Order #103 – Shipped</li>
+        </ul>
+      </div>
+    </div>
+
+    <div id="reviews" class="section">
+      <div class="card">
+        <h2>Customer Reviews</h2>
+        <p> Amazing quality</p>
+        <p>Fast delivery</p>
+        <p>Loved the product</p>
+      </div>
+    </div>
+<div id="addproduct" class="section">
+  <div class="card">
+
+    <h2 class="form-title">Add Product</h2>
+
+    <!-- Product Name -->
+    <label class="required-label">
+      Product Name <span class="required">*</span>
+    </label>
+    <input id="pname" placeholder="Enter product name">
+
+    <!-- Price -->
+    <label class="required-label">
+      Price <span class="required">*</span>
+    </label>
+    <div class="price-wrapper">
+      <span class="rupee-symbol">₹</span>
+      <input
+        id="price"
+        type="text"
+        placeholder="Enter price"
+        min="0"
+        step="1"
+         oninput="validatePrice(this)"
+      />
+    </div>
+
+    <!-- Quantity -->
+    <label class="required-label">
+      Quantity Available <span class="required">*</span>
+    </label>
+    <input
+      id="quantity"
+      type="number"
+      min="0"
+      step="1"
+      placeholder="Enter quantity"
+      oninput="validateQuantity(this)"
+    >
+
+    <!-- Description -->
+    <label class="normal-label">
+      Description
+    </label>
+    <textarea id="desc" placeholder="Enter description"></textarea>
+
+    <!-- Image Upload -->
+    <label class="required-label">
+      Product Image <span class="required">*</span>
+    </label>
+    <div class="file-upload">
+      <label for="image" class="file-label">Choose Product Image</label>
+      <input id="image" type="file" accept="image/*" onchange="previewImage(this)">
+      <small class="hint">Only JPG, JPEG, PNG allowed</small>
+      <small class="hint">Max 2MB</small>
+    </div>
+
+    <img
+      id="imgPreview"
+      style="display:none; width:150px; margin-top:10px; border-radius:10px;"
+    >
+
+    <!-- Red Button -->
+    <button class="save-btn" onclick="addProduct()">Add Product</button>
+
+  </div>
+</div>
+
+
+    <div id="store" class="section">
+      <h2>My Products</h2>
+      <div class="product-grid"></div>
+    </div>
+
+    <!-- NEW PROFILE SECTION -->
+    <div id="profile" class="section">
+      <div class="card">
+        <h2>Seller Profile</h2>
+        
+        <!-- Display Profile Info -->
+        <div id="profileDisplay">
+          <div style="margin-bottom: 15px;">
+            <strong>Seller ID:</strong> <span id="displaySellerId">Loading...</span>
+          </div>
+          <div style="margin-bottom: 15px;">
+            <strong>Name:</strong> <span id="displayName">Loading...</span>
+          </div>
+          <div style="margin-bottom: 15px;">
+            <strong>Email:</strong> <span id="displayEmail">Loading...</span>
+          </div>
+          <div style="margin-bottom: 15px;">
+            <strong>Smart Card ID:</strong> <span id="displaySmartcardId">Loading...</span>
+          </div>
+          <div style="margin-bottom: 15px;">
+            <strong>Hostel:</strong> <span id="displayHostel">Loading...</span>
+          </div>
+          <button onclick="editProfile()" style="background: #007bff; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; margin-top: 10px;">Edit Profile</button>
+        </div>
+
+        <!-- Edit Profile Form (hidden by default) -->
+        <form id="profileForm" style="display: none;">
+          <div style="margin-bottom: 15px;">
+            <label for="editName"><strong>Name:</strong></label><br>
+            <input type="text" id="editName" name="name" required style="width: 100%; padding: 8px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px;">
+          </div>
+          <div style="margin-bottom: 15px;">
+            <label for="editEmail"><strong>Email:</strong></label><br>
+            <input type="email" id="editEmail" readonly style="width: 100%; padding: 8px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; background-color: #f5f5f5; cursor: not-allowed;" title="Email cannot be changed">
+          </div>
+          <div style="margin-bottom: 15px;">
+            <label for="editSmartcardId"><strong>Smart Card ID:</strong></label><br>
+            <input type="text" id="editSmartcardId" name="smartcard_id" required style="width: 100%; padding: 8px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px;">
+          </div>
+          <div style="margin-bottom: 15px;">
+            <label for="editHostel"><strong>Hostel:</strong></label><br>
+            <input type="text" id="editHostel" name="hostel" required style="width: 100%; padding: 8px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px;">
+          </div>
+          <div style="margin-top: 15px;">
+            <button type="submit" style="background: #28a745; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; margin-right: 10px;">Save Changes</button>
+            <button type="button" onclick="cancelEdit()" style="background: #6c757d; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer;">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div id="popup" class="popup"></div>
+<p>Welcome, <span id="sellerEmail"></span></p>
+
+<script>
+
+async function checkSession() {
+  try {
+    const res = await fetch("http://localhost:3000/check-session", { credentials: "include" });
+
+    if (!res.ok) {
+      // If the server responds with 401/403
+      throw new Error("Unauthorized");
+    }
+
+    const data = await res.json();
+
+    if (!data.loggedIn || data.user.role !== "seller") {
+      // Redirect if not logged in or wrong role
+      window.location.replace("novaconnect_2ndpage.html");
+    } else {
+      document.getElementById("sellerEmail").textContent = data.user.email;
+      document.getElementById("dashboard").style.display = "flex"; // show dashboard only if logged in
+    }
+
+  } catch (err) {
+    // Network error or unauthorized
+    window.location.replace("novaconnect_2ndpage.html");
+  }
+}
+
+// Prevent back button from showing cached page
+history.pushState(null, null, location.href);
+window.onpopstate = function () {
+  window.location.replace("novaconnect_2ndpage.html"); // landing page
+};
+
+// Run session check immediately
+checkSession();
+
+
+function showPopup(msg) {
+  const popup = document.getElementById("popup");
+  popup.innerText = msg;
+  popup.style.display = "block";
+  setTimeout(() => popup.style.display = "none", 2000);
+}
+
+function showSection(id) {
+  document.querySelectorAll(".section").forEach(sec => sec.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  if (id === "store") loadProducts();
+  if (id === "profile") loadProfile();
+}
+
+async function updateQuantity(id, qty) {
+  try {
+    const res = await fetch(
+      `http://localhost:3000/product/${id}/quantity`,
+      {
+        method: "PUT",
+        headers: { "Content-Type": "application/json"},
+        credentials: "include",
+        body: JSON.stringify({ quantity: Number(qty),
+         })
+      }
+    );
+
+    const data = await res.json();
+    showPopup(data.message);
+    loadProducts();
+  } catch {
+    showPopup("Failed to update stock");
+  }
+}
+
+/* ADD PRODUCT */
+async function addProduct() {
+  const Product_name = document.getElementById("pname").value.trim();
+ const price = parseFloat(document.getElementById("price").value);
+const quantity = parseInt(document.getElementById("quantity").value, 10);
+  const description = document.getElementById("desc").value.trim();
+  const imageFile = document.getElementById("image").files[0];
+
+   if (isNaN(price) || price <= 0) {
+  alert("Price is required");
+  return;
+}
+
+if (!Number.isInteger(price)) {
+  alert("Price must be a whole number (no decimals allowed)");
+  return;
+}
+
+  if (!Number.isInteger(quantity) || quantity < 0) {
+    showPopup("Quantity must be a whole number");
+    return;
+  }
+
+  if (!Product_name || !price || !imageFile) {
+    showPopup("Product name, price & image required");
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append("Product_name", Product_name);
+  formData.append("price", price);
+  formData.append("quantity", quantity);
+  formData.append("description", description);
+  formData.append("image", imageFile);
+
+  try {
+    const res = await fetch("http://localhost:3000/product", {
+      method: "POST",
+      body: formData, credentials: "include"
+    });
+
+    const data = await res.json();
+    showPopup(data.message || "Product added successfully");
+
+  } catch {
+    showPopup("Failed to add product");
+  }
+}
+/* LOAD PRODUCTS */
+async function loadProducts() {
+  try {
+    const res = await fetch("http://localhost:3000/products",{ credentials: "include"});
+    const products = await res.json();
+
+    const grid = document.querySelector(".product-grid");
+    grid.innerHTML = "";
+
+ products.forEach(p => {
+  const inStock = p.quantity > 0;
+
+  grid.innerHTML += `
+    <div class="product-card">
+      <img src="http://localhost:3000/images/${p.image}">
+      <h3>${p.Product_name}</h3>
+      <p>${p.description || ""}</p> 
+      <b>₹${p.price}</b>
+
+      <p style="color:${inStock ? "green" : "red"}">
+        ${inStock ? `In Stock (${p.quantity})` : "Out of Stock"}
+      </p>
+
+      <input type="number" min="0" value="${p.quantity}"
+        onchange="updateQuantity(${p.product_id}, this.value)"
+        style="width:80px; margin-top:8px">
+
+      <button class="delete-btn"
+        onclick="deleteProduct(${p.product_id})">
+        Delete
+      </button>
+    </div>
+  `;
+});
+
+
+  } catch {}
+}
+
+async function deleteProduct(id) {
+  if (!confirm("Are you sure you want to delete this product?")) return;
+
+  try {
+    const res = await fetch(`http://localhost:3000/product/${id}`, {
+      method: "DELETE", credentials: "include"
+    });
+
+    const data = await res.json();
+    showPopup(data.message);
+    loadProducts(); // refresh store
+  } catch {
+    showPopup("Failed to delete product");
+  }
+}
+
+function previewImage(input) {
+  const preview = document.getElementById("imgPreview");
+
+  if (input.files && input.files[0]) {
+    const reader = new FileReader();
+
+    reader.onload = function (e) {
+      preview.src = e.target.result;
+      preview.style.display = "block";
+    };
+
+    reader.readAsDataURL(input.files[0]);
+  } else {
+    preview.style.display = "none";
+  }
+}
+
+function validateQuantity(input) {
+  if (input.value.includes(".")) {
+    alert("Quantity must be a whole number (no decimals allowed)");
+    input.value = Math.floor(input.value);
+  }
+}
+async function logoutSeller() {
+  try {
+    await fetch("http://localhost:3000/logout", {
+      method: "POST",
+      credentials: "include"   // 🔑 sends session cookie
+    });
+
+    // Optional: clear frontend-only data
+    localStorage.clear();
+    sessionStorage.clear();
+
+    // Redirect after session is destroyed
+    window.location.href = "login.html";
+  } catch (err) {
+    alert("Logout failed. Please try again.");
+  }
+}
+
+
+function validatePrice(input) {
+  const value = input.value;
+
+  // If alphabets or special characters are entered
+  if (/[^0-9]/.test(value)) {
+    alert("Price must contain numbers only (no alphabets allowed)");
+    input.value = value.replace(/[^0-9]/g, "");
+    return;
+  }
+
+  // Remove leading zeros (optional)
+  if (value.length > 1 && value.startsWith("0")) {
+    input.value = value.replace(/^0+/, "");
+  }
+}
+
+// ===== PROFILE MANAGEMENT FUNCTIONS =====
+
+// Load seller profile data when profile section is opened
+async function loadProfile() {
+  try {
+    console.log('📥 Loading seller profile...');
+    
+    const response = await fetch('http://localhost:3000/seller/profile', {
+      method: 'GET',
+      credentials: 'include'
+    });
+    
+    console.log('📡 Profile response status:', response.status);
+    
+    const data = await response.json();
+    console.log('📋 Profile data:', data);
+    
+    if (data.success) {
+      console.log('✅ Profile loaded successfully from database');
+      
+      // Update display fields
+      document.getElementById('displaySellerId').textContent = data.profile.seller_id || 'N/A';
+      document.getElementById('displayName').textContent = data.profile.name || 'N/A';
+      document.getElementById('displayEmail').textContent = data.profile.email || 'N/A';
+      document.getElementById('displaySmartcardId').textContent = data.profile.smartcard_id || 'N/A';
+      document.getElementById('displayHostel').textContent = data.profile.hostel || 'N/A';
+      
+      // Update form fields
+      document.getElementById('editName').value = data.profile.name || '';
+      document.getElementById('editEmail').value = data.profile.email || '';
+      document.getElementById('editSmartcardId').value = data.profile.smartcard_id || '';
+      document.getElementById('editHostel').value = data.profile.hostel || '';
+    } else {
+      console.error('❌ Failed to load profile:', data.message);
+      showPopup('Failed to load profile: ' + data.message);
+    }
+  } catch (error) {
+    console.error('❌ Error loading profile:', error);
+    showPopup('Error loading profile data: ' + error.message);
+  }
+}
+
+// Switch to edit mode
+function editProfile() {
+  document.getElementById('profileDisplay').style.display = 'none';
+  document.getElementById('profileForm').style.display = 'block';
+}
+
+// Cancel edit mode
+function cancelEdit() {
+  document.getElementById('profileDisplay').style.display = 'block';
+  document.getElementById('profileForm').style.display = 'none';
+}
+
+// Handle profile form submission
+document.getElementById('profileForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  
+  console.log('📝 Profile form submitted');
+  
+  const name = document.getElementById('editName').value.trim();
+  const smartcard_id = document.getElementById('editSmartcardId').value.trim();
+  const hostel = document.getElementById('editHostel').value.trim();
+  
+  console.log('📋 Form data:', { name, smartcard_id, hostel });
+  
+  if (!name || !smartcard_id || !hostel) {
+    alert('All fields are required');
+    return;
+  }
+  
+  try {
+    console.log('🚀 Sending update request to server...');
+    
+    const response = await fetch('http://localhost:3000/seller/profile', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      credentials: 'include',
+      body: JSON.stringify({
+        name: name,
+        smartcard_id: smartcard_id,
+        hostel: hostel
+      })
+    });
+    
+    console.log('📡 Response status:', response.status);
+    
+    const data = await response.json();
+    console.log('📝 Response data:', data);
+    
+    if (data.success) {
+      console.log('✅ Profile updated successfully in database!');
+      showPopup('Profile updated successfully in database!');
+      cancelEdit();
+      loadProfile(); // Refresh the displayed data
+    } else {
+      console.error('❌ Server error:', data.message);
+      alert('Error updating profile: ' + data.message);
+    }
+  } catch (error) {
+    console.error('❌ Network/Client error:', error);
+    alert('An error occurred while updating profile: ' + error.message);
+  }
+});
+
+</script>
+
+</body>
+</html>
